@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conversor de Monedas</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="converter-card">
+    <div class="card-header">
+      <h1><i class="fas fa-exchange-alt"></i> Conversor Universal</h1>
+      <button class="theme-toggle" id="themeToggle" title="Cambiar tema">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+    <div class="card-body">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#currency">
+            <i class="fas fa-dollar-sign"></i> Monedas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#units">
+            <i class="fas fa-ruler"></i> Unidades
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#history">
+            <i class="fas fa-history"></i> Historial
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- TAB MONEDAS -->
+        <div class="tab-pane fade show active" id="currency">
+          <div id="errorAlert"></div>
+          <div style="position: relative;">
+            <div id="loadingCurrency" class="loading-overlay" style="display: none;">
+              <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+            
+            <div class="currency-box">
+              <label for="amount" class="form-label">
+                <i class="fas fa-dollar-sign text-success"></i> Cantidad
+              </label>
+              <div class="row g-3">
+                <div class="col-md-5">
+                  <input type="number" class="form-control" id="amount" placeholder="0.00" value="100" min="0" step="0.01">
+                </div>
+                <div class="col-md-7">
+                  <select class="form-select" id="from">
+                    <option value="USD">🇺🇸 USD - Dólar Estadounidense</option>
+                    <option value="EUR">🇪🇺 EUR - Euro</option>
+                    <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                    <option value="JPY">🇯🇵 JPY - Yen Japonés</option>
+                    <option value="MXN" selected>🇲🇽 MXN - Peso Mexicano</option>
+                    <option value="CAD">🇨🇦 CAD - Dólar Canadiense</option>
+                    <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
+                    <option value="CHF">🇨🇭 CHF - Franco Suizo</option>
+                    <option value="CNY">🇨🇳 CNY - Yuan Chino</option>
+                    <option value="INR">🇮🇳 INR - Rupia India</option>
+                    <option value="BRL">🇧🇷 BRL - Real Brasileño</option>
+                    <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center my-3">
+              <button class="swap-btn" id="swapCurrency" title="Intercambiar monedas">
+                <i class="fas fa-exchange-alt"></i>
+              </button>
+            </div>
+
+            <div class="currency-box">
+              <label for="resultAmount" class="form-label">
+                <i class="fas fa-coins text-warning"></i> Resultado
+              </label>
+              <div class="row g-3">
+                <div class="col-md-5">
+                  <input type="number" class="form-control" id="resultAmount" placeholder="0.00" readonly>
+                </div>
+                <div class="col-md-7">
+                  <select class="form-select" id="to">
+                    <option value="USD" selected>🇺🇸 USD - Dólar Estadounidense</option>
+                    <option value="EUR">🇪🇺 EUR - Euro</option>
+                    <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                    <option value="JPY">🇯🇵 JPY - Yen Japonés</option>
+                    <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
+                    <option value="CAD">🇨🇦 CAD - Dólar Canadiense</option>
+                    <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
+                    <option value="CHF">🇨🇭 CHF - Franco Suizo</option>
+                    <option value="CNY">🇨🇳 CNY - Yuan Chino</option>
+                    <option value="INR">🇮🇳 INR - Rupia India</option>
+                    <option value="BRL">🇧🇷 BRL - Real Brasileño</option>
+                    <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="result-box">
+              <h3 id="resultCurrency">—</h3>
+              <p id="rateCurrency"><span class="badge bg-light text-dark">Tasa: —</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB UNIDADES -->
+        <div class="tab-pane fade" id="units">
+          <div class="currency-box">
+            <label for="unitType" class="form-label">
+              <i class="fas fa-layer-group text-primary"></i> Tipo de Unidad
+            </label>
+            <select class="form-select" id="unitType">
+              <option value="length">📏 Longitud (m, km, cm, ft, in)</option>
+              <option value="weight">⚖️ Peso (kg, g, lb, oz)</option>
+              <option value="temperature">🌡️ Temperatura (°C, °F, K)</option>
+              <option value="volume">🧪 Volumen (L, mL, gal, fl oz)</option>
+            </select>
+          </div>
+
+          <div class="currency-box">
+            <label for="unitAmount" class="form-label">Valor</label>
+            <div class="row g-3">
+              <div class="col-md-5">
+                <input type="number" class="form-control" id="unitAmount" placeholder="0" value="1" step="0.01">
+              </div>
+              <div class="col-md-7">
+                <select class="form-select" id="unitFrom"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center my-3">
+            <button class="swap-btn" id="swapUnit" title="Intercambiar unidades">
+              <i class="fas fa-exchange-alt"></i>
+            </button>
+          </div>
+
+          <div class="currency-box">
+            <label for="unitResultAmount" class="form-label">Resultado</label>
+            <div class="row g-3">
+              <div class="col-md-5">
+                <input type="number" class="form-control" id="unitResultAmount" placeholder="0" readonly>
+              </div>
+              <div class="col-md-7">
+                <select class="form-select" id="unitTo"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <h3 id="resultUnit">—</h3>
+          </div>
+        </div>
+
+        <!-- TAB HISTORIAL -->
+        <div class="tab-pane fade" id="history">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0"><i class="fas fa-clock-rotate-left"></i> Conversiones Recientes</h5>
+            <button class="btn btn-danger btn-sm" id="clearHistory">
+              <i class="fas fa-trash"></i> Limpiar
+            </button>
+          </div>
+          <div id="historyList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
